@@ -1,90 +1,87 @@
-# Auto Monitor - gRPC & WebSocket
+# 🚀 Auto Monitor - Observability Suite
 
-Sistema de monitoramento em tempo real para máquinas Windows e Linux.
+Sistema profissional de monitoramento em tempo real para infraestruturas híbridas (Windows/Linux), escalável via Docker e com interface desktop moderna.
 
-## Requisitos
+---
 
-- [Go](https://go.dev/doc/install) (v1.18+)
-- [Protocol Buffers Compiler (protoc)](https://grpc.io/docs/protoc-installation/)
-- Plugins Go para protoc:
-  ```bash
-  go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-  go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-  ```
+## 🛠️ Tecnologias
+- **Backend Core**: Go (gRPC + WebSockets)
+- **Persistência**: InfluxDB (Séries temporais) + Supabase (Gerenciamento de Licenças)
+- **Visualização**: Grafana (Advanced) + Embedded Dashboard (Live)
+- **Desktop Client**: Wails (Go + React)
+- **Infra**: Docker & Docker Compose
 
-## Estrutura do Projeto
+---
 
-- `/proto`: Definição do contrato gRPC.
-- `/server`: Servidor que recebe métricas gRPC, atualiza o Supabase e distribui via WebSocket.
-- `/client`: Agente coletor de métricas (CPU, RAM, Disco, Rede).
+## 📂 Estrutura do Projeto
+- `/proto`: Contrato de comunicação gRPC.
+- `/server`: Servidor centralizado e dashboard web embutido.
+- `/client-desktop`: Nova interface desktop premium (Wails).
+- `/client`: Agente coletor legidado (CLI).
+- `/grafana`: Configurações e dashboards pré-provisionados.
 
-## Configuração
+---
 
-1. Gere os arquivos gRPC a partir do proto:
-   ```bash
-   protoc --go_out=. --go_opt=paths=source_relative \
-          --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-          proto/monitor.proto
-   ```
+## 🏗️ Como Executar o Servidor (Docker Stack)
 
-2. Configure o arquivo `.env` dentro da pasta `server/` com suas credenciais do Supabase e do InfluxDB.
+O servidor agora utiliza uma stack completa de observabilidade.
 
-## InfluxDB e Retenção de Dados
+1.  **Pré-requisitos**: Docker e Docker Compose instalados.
+2.  **Configuração**: Edite o arquivo `.env` na raiz do projeto com suas chaves do Supabase.
+3.  **Iniciar**:
+    ```bash
+    docker-compose up --build
+    ```
 
-O InfluxDB é usado para persistir o histórico de métricas. Para garantir que os dados com mais de 30 dias sejam removidos automaticamente, você deve configurar a **Retention Policy** no bucket:
+### 🛰️ Acessando os Dashboards
+- **Live Dashboard (Go Native)**: [http://localhost:8080](http://localhost:8080)
+- **Grafana (Histórico & Analytics)**: [http://localhost:3000](http://localhost:3000)
+    - *Usuário/Senha padrão: `admin` / `admin`*
 
-1. Ao criar o bucket via UI do InfluxDB, selecione "Set Retention" para 30 dias.
-2. Ou via CLI:
-   ```bash
-   influx bucket update --name monitor-bucket --retention 720h
-   ```
+---
 
-## Como Executar
+## 🖥️ Como Executar o Cliente Desktop (GUI)
 
-### Servidor
+O novo cliente desktop oferece uma experiência moderna para o usuário final.
+
+1.  **Pré-requisitos**: Instale o [Wails CLI](https://wails.io/docs/gettingstarted/installation).
+2.  **Iniciar em Modo Dev**:
+    ```bash
+    cd client-desktop
+    wails dev
+    ```
+3.  **Compilar Executável**:
+    ```bash
+    wails build
+    ```
+
+---
+
+## ⚠️ Solução de Problemas
+
+### Conflito de Portas
+Se ao rodar o `docker-compose` você receber um erro como:
+`Bind for 0.0.0.0:8086 failed: port is already allocated`
+
+Significa que você já tem o InfluxDB (ou outro serviço) rodando nessa porta. Para resolver:
+1.  Pare o serviço local: `sudo systemctl stop influxdb` (se estiver no Linux).
+2.  Ou altere a porta no `docker-compose.yml` na seção de `ports` do serviço `influxdb`.
+
+### gRPC Protobuf
+Se precisar alterar o contrato de comunicação:
 ```bash
-cd server
-go run main.go
-```
-*   gRPC: porta 50051
-*   WebSocket: porta 8080 (endpoint `/ws`)
-
-### Cliente (Agente)
-```bash
-cd client
-go run main.go
-```
-*O cliente solicitará o `code_app` (licença) ao iniciar.*
-
-## Compilação para Produção (Executáveis)
-
-Para gerar os binários para Windows e Linux:
-
-### Linux
-```bash
-# Servidor
-GOOS=linux GOARCH=amd64 go build -o monitor-server-linux ./server
-# Cliente
-GOOS=linux GOARCH=amd64 go build -o monitor-client-linux ./client
+protoc --go_out=. --go_opt=paths=source_relative \
+       --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+       proto/monitor.proto
 ```
 
-### Windows (.exe)
-```bash
-# Servidor
-GOOS=windows GOARCH=amd64 go build -o monitor-server.exe ./server
-# Cliente
-GOOS=windows GOARCH=amd64 go build -o monitor-client.exe ./client
-```
+---
 
-## Integração com a Web
-
-O dashboard web deve se conectar ao servidor via WebSocket:
-`ws://<ip-do-servidor>:8080/ws`
-
-O servidor enviará um JSON a cada segundo para cada máquina ativa:
+## 📊 Formato dos Dados (Real-time)
+O servidor distribui via WebSocket o seguinte payload JSON:
 ```json
 {
-  "code_app": "LICENSE-123",
+  "code_app": "NOME-DA-MAQUINA",
   "cpu_usage": 15.5,
   "ram_usage": 60.2,
   "disk_usage": 45.0,

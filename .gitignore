@@ -17,4 +17,5 @@ vendor/
 .idea/
 
 # Logs
+server.log
 *.log
