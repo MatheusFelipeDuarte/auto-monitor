@@ -7,14 +7,14 @@ services:
       dockerfile: server/Dockerfile
     ports:
       - "50051:50051" # gRPC
-      - "8080:8080"   # WebSocket / Web Dashboard
+      - "8080:8080" # WebSocket / Web Dashboard
     env_file:
       - .env
     environment:
       - INFLUX_URL=http://influxdb:8086
-      - INFLUX_TOKEN=my-super-secret-token
-      - INFLUX_ORG=auto-monitor-org
-      - INFLUX_BUCKET=monitor-bucket
+      - INFLUX_TOKEN=ZiTD13efnARy5bHqHibhF3eYim4i7CzA2XkpJ2rnNXTJuC5zScHRE4PdRjKmvpWafqbaqysJKMYkPTzzNQsMMA==
+      - INFLUX_ORG=doppio
+      - INFLUX_BUCKET=auto-monitor
     depends_on:
       - influxdb
     restart: unless-stopped
