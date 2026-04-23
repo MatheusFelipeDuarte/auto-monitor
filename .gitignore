@@ -1,0 +1,20 @@
+# Binários
+bin/
+*.exe
+monitor-server-*
+monitor-client-*
+*.test
+
+# Configurações sensíveis
+.env
+*.env
+
+# Dependências
+vendor/
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log

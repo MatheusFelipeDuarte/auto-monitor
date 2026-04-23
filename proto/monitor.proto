@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package monitor;
+
+option go_package = "auto-monitor/proto";
+
+service MonitorService {
+    rpc TransmitMetrics (stream MetricsRequest) returns (MetricsResponse);
+    rpc Authenticate (AuthRequest) returns (AuthResponse);
+    rpc Disconnect (DisconnectRequest) returns (DisconnectResponse);
+}
+
+message AuthRequest {
+    string code_app = 1;
+}
+
+message AuthResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message MetricsRequest {
+    string code_app = 1;
+    double cpu_usage = 2;
+    double ram_usage = 3;
+    double disk_usage = 4;
+    double network_tx = 5; // Transmitted
+    double network_rx = 6; // Received
+}
+
+message MetricsResponse {
+    bool success = 1;
+}
+
+message DisconnectRequest {
+    string code_app = 1;
+}
+
+message DisconnectResponse {
+    bool success = 1;
+}
