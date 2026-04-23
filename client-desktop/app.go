@@ -56,7 +56,7 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	
 	// Tentar conectar ao servidor gRPC (localhost:50051 por padrão)
-	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("31.97.175.114:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		a.statusMessage = "Erro ao conectar ao servidor"
 		return
