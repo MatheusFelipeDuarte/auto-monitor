@@ -1,0 +1,9 @@
+.git
+.gitignore
+.dockerignore
+.vscode
+.env
+*.exe
+client-desktop/build
+client-desktop/frontend/node_modules
+client-desktop/frontend/dist
