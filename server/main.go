@@ -306,6 +306,19 @@ func (s *server) handleWSLogs(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	s.logClients[conn] = true
 	s.mu.Unlock()
+
+	defer func() {
+		s.mu.Lock()
+		delete(s.logClients, conn)
+		s.mu.Unlock()
+		conn.Close()
+	}()
+
+	for {
+		if _, _, err := conn.ReadMessage(); err != nil {
+			break
+		}
+	}
 }
 
 func (s *server) startLogBroadcaster() {
@@ -331,6 +344,19 @@ func (s *server) handleWS(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	s.wsClients[conn] = true
 	s.mu.Unlock()
+
+	defer func() {
+		s.mu.Lock()
+		delete(s.wsClients, conn)
+		s.mu.Unlock()
+		conn.Close()
+	}()
+
+	for {
+		if _, _, err := conn.ReadMessage(); err != nil {
+			break
+		}
+	}
 }
 
 func (s *server) handleIndex(w http.ResponseWriter, r *http.Request) {
