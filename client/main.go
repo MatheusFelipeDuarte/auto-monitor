@@ -28,7 +28,7 @@ func main() {
 		fmt.Println("🚀 AUTO MONITOR CLIENT")
 		fmt.Println("═══════════════════════")
 
-		conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+		conn, err := grpc.Dial("31.97.175.114:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			fmt.Printf("\n❌ Erro ao tentar conectar no endereço do servidor: %v\n", err)
 			time.Sleep(3 * time.Second)

@@ -25,9 +25,9 @@ services:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
       - DOCKER_INFLUXDB_INIT_PASSWORD=admin-password-123
-      - DOCKER_INFLUXDB_INIT_ORG=auto-monitor-org
-      - DOCKER_INFLUXDB_INIT_BUCKET=monitor-bucket
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-token
+      - DOCKER_INFLUXDB_INIT_ORG=doppio
+      - DOCKER_INFLUXDB_INIT_BUCKET=auto-monitor
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=ZiTD13efnARy5bHqHibhF3eYim4i7CzA2XkpJ2rnNXTJuC5zScHRE4PdRjKmvpWafqbaqysJKMYkPTzzNQsMMA==
     volumes:
       - influxdb-data:/var/lib/influxdb2
     restart: unless-stopped

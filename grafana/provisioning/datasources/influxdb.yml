@@ -7,8 +7,8 @@ datasources:
     url: http://influxdb:8086
     jsonData:
       version: Flux
-      organization: auto-monitor-org
-      defaultBucket: monitor-bucket
+      organization: doppio
+      defaultBucket: auto-monitor
     secureJsonData:
-      token: my-super-secret-token
+      token: ZiTD13efnARy5bHqHibhF3eYim4i7CzA2XkpJ2rnNXTJuC5zScHRE4PdRjKmvpWafqbaqysJKMYkPTzzNQsMMA==
     isDefault: true
