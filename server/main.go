@@ -109,7 +109,7 @@ func (s *server) Authenticate(ctx context.Context, req *pb.AuthRequest) (*pb.Aut
 		return &pb.AuthResponse{Success: false, Message: "Erro ao atualizar status no banco: " + err.Error()}, nil
 	}
 
-	log.Printf("Cliente autenticado e conectado: %s", req.CodeApp)
+	log.Printf("✅ Cliente autenticado e conectado: %s", req.CodeApp)
 	return &pb.AuthResponse{Success: true, Message: "Conectado"}, nil
 }
 
@@ -183,6 +183,7 @@ func (s *server) TransmitMetrics(stream pb.MonitorService_TransmitMetricsServer)
 			s.clients[req.CodeApp] = data
 			s.mu.Unlock()
 
+			log.Printf("📊 Metrics from %s: CPU=%.1f%% RAM=%.1f%%", req.CodeApp, req.CpuUsage, req.RamUsage)
 			s.broadcastToWS(data)
 			s.saveToInflux(data)
 		}
@@ -259,6 +260,11 @@ func (s *server) broadcastToWS(data *MachineData) {
 	msg, _ := json.Marshal(data)
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	
+	if len(s.wsClients) > 0 {
+		// log.Printf("📡 Broadcasting to %d WS clients", len(s.wsClients))
+	}
+
 	for client := range s.wsClients {
 		err := client.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
@@ -638,6 +644,14 @@ func main() {
 	}()
 
 	// WebSocket/HTTP Server
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{
+			"status":  "ok",
+			"version": "1.0.4-debug",
+			"influx":  os.Getenv("INFLUX_URL"),
+		})
+	})
 	http.HandleFunc("/ws", s.handleWS)
 	http.HandleFunc("/monitor/ws", s.handleWS)
 	http.HandleFunc("/ws/logs", s.handleWSLogs)

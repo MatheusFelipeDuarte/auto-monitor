@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -56,7 +57,9 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	
 	// Tentar conectar ao servidor gRPC (localhost:50051 por padrão)
-	conn, err := grpc.Dial("31.97.175.114:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	target := "31.97.175.114:50051"
+	fmt.Printf("[DEBUG] Conectando ao servidor gRPC em: %s\n", target)
+	conn, err := grpc.Dial(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		a.statusMessage = "Erro ao conectar ao servidor"
 		return
@@ -76,8 +79,12 @@ func (a *App) Authenticate(code string) AuthResponse {
 		return AuthResponse{Success: false, Message: "Código não pode ser vazio"}
 	}
 
-	resp, err := a.client.Authenticate(context.Background(), &pb.AuthRequest{CodeApp: code})
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	resp, err := a.client.Authenticate(ctx, &pb.AuthRequest{CodeApp: code})
 	if err != nil {
+		fmt.Printf("[ERROR] Falha na autenticação gRPC: %v\n", err)
 		return AuthResponse{Success: false, Message: "Erro de comunicação: " + err.Error()}
 	}
 
