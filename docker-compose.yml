@@ -10,9 +10,9 @@ services:
       - .env
     environment:
       - INFLUX_URL=http://influxdb:8086
-      - INFLUX_TOKEN=ZiTD13efnARy5bHqHibhF3eYim4i7CzA2XkpJ2rnNXTJuC5zScHRE4PdRjKmvpWafqbaqysJKMYkPTzzNQsMMA==
-      - INFLUX_ORG=doppio
-      - INFLUX_BUCKET=auto-monitor
+      - INFLUX_TOKEN=${INFLUX_TOKEN}
+      - INFLUX_ORG=${INFLUX_ORG}
+      - INFLUX_BUCKET=${INFLUX_BUCKET}
     depends_on:
       - influxdb
     restart: unless-stopped
@@ -25,9 +25,9 @@ services:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
       - DOCKER_INFLUXDB_INIT_PASSWORD=admin-password-123
-      - DOCKER_INFLUXDB_INIT_ORG=doppio
-      - DOCKER_INFLUXDB_INIT_BUCKET=auto-monitor
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=ZiTD13efnARy5bHqHibhF3eYim4i7CzA2XkpJ2rnNXTJuC5zScHRE4PdRjKmvpWafqbaqysJKMYkPTzzNQsMMA==
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUX_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUX_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN}
     volumes:
       - influxdb-data:/var/lib/influxdb2
     restart: unless-stopped
