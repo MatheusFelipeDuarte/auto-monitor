@@ -612,11 +612,15 @@ func main() {
 	}()
 
 	// WebSocket/HTTP Server
-	http.HandleFunc("/", s.handleIndex)
 	http.HandleFunc("/ws", s.handleWS)
+	http.HandleFunc("/monitor/ws", s.handleWS)
 	http.HandleFunc("/ws/logs", s.handleWSLogs)
+	http.HandleFunc("/monitor/ws/logs", s.handleWSLogs)
 	http.HandleFunc("/list-logs", s.handleListLogs)
+	http.HandleFunc("/monitor/list-logs", s.handleListLogs)
 	http.HandleFunc("/download-log", s.handleDownloadLog)
+	http.HandleFunc("/monitor/download-log", s.handleDownloadLog)
+	http.HandleFunc("/", s.handleIndex)
 	
 	log.Println("Web Dashboard running on http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

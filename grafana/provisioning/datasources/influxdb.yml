@@ -10,5 +10,5 @@ datasources:
       organization: doppio
       defaultBucket: auto-monitor
     secureJsonData:
-      token: ZiTD13efnARy5bHqHibhF3eYim4i7CzA2XkpJ2rnNXTJuC5zScHRE4PdRjKmvpWafqbaqysJKMYkPTzzNQsMMA==
+      token: 19nU415G88QQ-k4hSad8ew0OFzcEVN6J70czpPl86Q17Qh2T5fLyxSPl3KDmcrudF3L-nkLqIh3hHIRcjfFoog==
     isDefault: true
